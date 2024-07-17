@@ -3,6 +3,7 @@ const express = require("express");
 const Database = require("./config/database");
 const search = require("./controllers/search.controller.js");
 const decodeToken = require("./middlewares/auth/decodeToken.js");
+const userRoutes = require("./routes/user.route.js");
 
 const app = express();
 
