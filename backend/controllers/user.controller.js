@@ -241,12 +241,36 @@ const logout = async(req,res)=>{
             message:"Internal server error. Please try again later.",
         });
     }
-}
+};
+
+const updateInfo=async(req,res)=>{
+    try{
+        const user = await User.findById(req.userId);
+        if(!user){
+            return res.status(404).json({
+                message:"User not found",
+            });
+        }
+        const {location,interests,bio}=req.body;
+        user.location=location;
+        user.interests=interests;
+        user.bio=bio;
+        await user.save();
+        res.status(200).json({
+            message:"User info updated successfully",
+        });
+    }catch(err){
+        res.status(500).json({
+            message:"Error updating user info",
+        });
+    }
+};
 
 module.exports={
     getUser,
     addUser,
     refreshToken,
     signin,
-    logout
+    logout,
+    updateInfo,
 };

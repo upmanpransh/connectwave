@@ -2,11 +2,11 @@ const decodeToken = require("../middlewares/auth/decodeToken");
 const passport = require("passport");
 const useragent= require("express-useragent");
 const requestIp = require("request-ip");
-const { getPublicUsers,getPublicUser,getModProfile,getFollowingUsers } = require("../controllers/profile.controller");
+const { getPublicUsers,getPublicUser,getModProfile,getFollowingUsers,followUser,unfollowUser } = require("../controllers/profile.controller");
 const requireAuth= passport.authenticate("jwt",{session:false},null);
-const { getUser,addUser,refreshToken,signin} = require("../controllers/user.controller");
+const { getUser,addUser,refreshToken,signin,logout,updateInfo} = require("../controllers/user.controller");
 
-const {signUpSignInLimiter}=require("../middlewares/limiter/limiter");
+const {signUpSignInLimiter,followLimiter}=require("../middlewares/limiter/limiter");
 const avatarUpload=require("../middlewares/users/avatarUpload");
 const {addUserValidator,addUserValidatorHandler}=require("../middlewares/users/usersValidator");
 const {sendLoginVerificationEmail}=require("../middlewares/users/verifyLogin");

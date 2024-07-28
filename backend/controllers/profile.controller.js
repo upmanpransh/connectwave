@@ -166,9 +166,78 @@ const getFollowingUsers = async(req,res)=>{
     }
 };
 
+const followUser=async(req,res)=>{
+    try{
+        const followerId=req.userId;
+        const followingId=req.params.id;
+        const relationshipExists=await Relationship.exists({
+            follower:followerId,
+            following:followingId,
+        });
+        if(relationshipExists){
+            return res.status(400).json({
+                message:"Already following this user",
+            });
+        }
+        await Promise.all([
+            User.findByIdAndUpdate(followingId,{$addToSet:{followers:followerId}},{new:true}),
+            User.findByIdAndUpdate(followerId,{$addToSet:{following:followingId}},{new:true}),
+        ]);
+        await Relationship.create({follower:followerId, following: followingId});
+        res.status(200).json({
+            message:"User followed successfully",
+        });
+    }catch(error){
+        res.status(500).json({
+            message:"Some error occurred while following the user",
+        });
+    }
+};
+
+const unfollowUser =async(req,res)=>{
+    try{
+        const followerId = req.userId;
+        const followingId = req.params.id;
+        const relationshipExists=await Relationship.exists({
+            follower:followerId,
+            following:followingId,
+        });
+        if(!relationshipExists){
+            return res.status(400).json({
+                message:"Relationship does not exists",
+            });
+        }
+        await Promise.all([
+            User.findByIdAndUpdate(
+                followingId,
+                {$pull:{followers:followerId}},
+                {new:true}
+            ),
+            User.findByIdAndUpdate(
+                followerId,
+                {$pull:{following:followingId}},
+                {new:true}
+            ),
+        ]);
+        await Relationship.deleteOne({
+            follower:followerId,
+            following:followingId,
+        });
+        res.status(200).json({
+            message:"User unfollowed successfully",
+        });
+    }catch(error){
+        res.status(500).json({
+            message:"Some error occurred while unfollowing the user",
+        });
+    }
+};
+
 module.exports={
     getPublicUser,
     getPublicUsers,
     getModProfile,
     getFollowingUsers,
+    followUser,
+    unfollowUser,
 };

@@ -4,6 +4,7 @@ const Database = require("./config/database");
 const search = require("./controllers/search.controller.js");
 const decodeToken = require("./middlewares/auth/decodeToken.js");
 const userRoutes = require("./routes/user.route.js");
+const postRoutes = require("./routes/post.route.js");
 
 const app = express();
 
@@ -34,7 +35,9 @@ app.get("/server-status",(req,res)=>{
     res.status(200).json({message:"Server is up and running!"});
 });
 app.get("/search",decodeToken,search);
+
 app.use("/users",userRoutes);
+app.use("/posts",postRoutes);
 
 
 

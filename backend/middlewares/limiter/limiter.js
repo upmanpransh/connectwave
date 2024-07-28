@@ -10,7 +10,9 @@ const createLimiter = (windowMs, max, message)=>{
 };
 
 const signUpSignInLimiter=createLimiter(10*60*1000,100,MESSAGE);
+const followLimiter=createLimiter(10*60*1000,100,MESSAGE);
 
 module.exports={
     signUpSignInLimiter,
+    followLimiter,
 };
